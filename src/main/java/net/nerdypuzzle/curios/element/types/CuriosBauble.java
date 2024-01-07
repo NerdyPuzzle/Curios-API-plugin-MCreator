@@ -1,17 +1,22 @@
 package net.nerdypuzzle.curios.element.types;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import net.mcreator.element.GeneratableElement;
 import net.mcreator.element.parts.MItemBlock;
 import net.mcreator.element.parts.TabEntry;
 import net.mcreator.element.parts.procedure.Procedure;
+import net.mcreator.element.parts.procedure.StringListProcedure;
+import net.mcreator.element.types.Item;
 import net.mcreator.element.types.interfaces.IItem;
 import net.mcreator.element.types.interfaces.IItemWithModel;
 import net.mcreator.element.types.interfaces.IItemWithTexture;
 import net.mcreator.element.types.interfaces.ITabContainedElement;
+import net.mcreator.minecraft.DataListEntry;
+import net.mcreator.minecraft.DataListLoader;
 import net.mcreator.minecraft.MCItem;
+import net.mcreator.ui.minecraft.states.StateMap;
 import net.mcreator.ui.workspace.resources.TextureType;
 import net.mcreator.util.image.ImageUtils;
 import net.mcreator.workspace.elements.ModElement;
@@ -42,9 +47,13 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
     public boolean enableMeleeDamage;
     public boolean addSlot;
     public double damageVsEntity;
-    public List<String> specialInfo;
+    public StringListProcedure specialInformation;
     public boolean hasGlow;
     public Procedure glowCondition;
+
+    public Map<String, Procedure> customProperties;
+    public List<Item.StateEntry> states;
+
     public String guiBoundTo;
     public int inventorySize;
     public int inventoryStackSize;
@@ -88,6 +97,35 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
         this.animation = "eat";
         this.slotAmount = 1;
         this.slotType = "CURIO";
+        this.customProperties = new LinkedHashMap<>();
+        this.states = new ArrayList<>();
+    }
+
+    public List<Item.StateEntry> getModels() {
+        List<Item.StateEntry> models = new ArrayList<>();
+        List<String> builtinProperties = DataListLoader.loadDataList("itemproperties").stream()
+                .filter(e -> e.isSupportedInWorkspace(getModElement().getWorkspace())).map(DataListEntry::getName)
+                .toList();
+
+        states.forEach(state -> {
+            Item.StateEntry model = new Item.StateEntry();
+            model.setWorkspace(getModElement().getWorkspace());
+            model.renderType = state.renderType;
+            model.texture = state.texture;
+            model.customModelName = state.customModelName;
+
+            model.stateMap = new StateMap();
+            state.stateMap.forEach((prop, value) -> {
+                if (customProperties.containsKey(prop.getName().replace("CUSTOM:", "")) || builtinProperties.contains(
+                        prop.getName()))
+                    model.stateMap.put(prop, value);
+            });
+
+            // only add this state if at least one supported property is present
+            if (!model.stateMap.isEmpty())
+                models.add(model);
+        });
+        return models;
     }
 
     @Override public List<MCItem> providedMCItems() {
@@ -108,19 +146,13 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
     }
 
     public Model getItemModel() {
-        Model.Type modelType = Type.BUILTIN;
-        if (this.renderType == 1) {
-            modelType = Type.JSON;
-        } else if (this.renderType == 2) {
-            modelType = Type.OBJ;
-        }
-
-        return Model.getModelByParams(this.getModElement().getWorkspace(), this.customModelName, modelType);
+        return Model.getModelByParams(getModElement().getWorkspace(), customModelName, Item.decodeModelType(renderType));
     }
 
     public Map<String, String> getTextureMap() {
-        Model model = this.getItemModel();
-        return model instanceof TexturedModel && ((TexturedModel)model).getTextureMapping() != null ? ((TexturedModel)model).getTextureMapping().getTextureMap() : null;
+        if (getItemModel() instanceof TexturedModel textured && textured.getTextureMapping() != null)
+            return textured.getTextureMapping().getTextureMap();
+        return new HashMap<>();
     }
 
     public TabEntry getCreativeTab() {
@@ -137,11 +169,11 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
     }
 
     public boolean hasNormalModel() {
-        return this.getItemModel().getType() == Type.BUILTIN && this.getItemModel().getReadableName().equals("Normal");
+        return Item.decodeModelType(renderType) == Model.Type.BUILTIN && customModelName.equals("Normal");
     }
 
     public boolean hasToolModel() {
-        return this.getItemModel().getType() == Type.BUILTIN && this.getItemModel().getReadableName().equals("Tool");
+        return Item.decodeModelType(renderType) == Model.Type.BUILTIN && customModelName.equals("Tool");
     }
 
     public boolean hasInventory() {

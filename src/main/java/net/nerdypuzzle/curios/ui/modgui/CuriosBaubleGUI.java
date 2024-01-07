@@ -6,11 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import javax.swing.*;
 
 import net.mcreator.blockly.data.Dependency;
@@ -18,9 +15,11 @@ import net.mcreator.element.GeneratableElement;
 import net.mcreator.element.ModElementType;
 import net.mcreator.element.parts.TabEntry;
 import net.mcreator.element.types.GUI;
+import net.mcreator.element.types.Item;
 import net.mcreator.minecraft.DataListEntry;
 import net.mcreator.minecraft.ElementUtil;
 import net.mcreator.ui.MCreator;
+import net.mcreator.ui.component.JStringListField;
 import net.mcreator.ui.component.SearchableComboBox;
 import net.mcreator.ui.component.util.ComboBoxUtil;
 import net.mcreator.ui.component.util.ComponentUtils;
@@ -35,11 +34,13 @@ import net.mcreator.ui.laf.renderer.WTextureComboBoxRenderer;
 import net.mcreator.ui.minecraft.DataListComboBox;
 import net.mcreator.ui.minecraft.MCItemHolder;
 import net.mcreator.ui.minecraft.TextureHolder;
+import net.mcreator.ui.minecraft.states.item.JItemPropertiesStatesList;
 import net.mcreator.ui.modgui.ModElementGUI;
+import net.mcreator.ui.procedure.AbstractProcedureSelector;
 import net.mcreator.ui.procedure.ProcedureSelector;
 import net.mcreator.ui.procedure.AbstractProcedureSelector.Side;
+import net.mcreator.ui.procedure.StringListProcedureSelector;
 import net.mcreator.ui.validation.AggregatedValidationResult;
-import net.mcreator.ui.validation.IValidable;
 import net.mcreator.ui.validation.ValidationGroup;
 import net.mcreator.ui.validation.Validator;
 import net.mcreator.ui.validation.component.VComboBox;
@@ -57,7 +58,7 @@ import net.nerdypuzzle.curios.element.types.CuriosBauble;
 
 public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     private TextureHolder texture;
-    private final JTextField specialInfo = new JTextField(20);
+    private StringListProcedureSelector specialInformation;
     private final JSpinner stackSize = new JSpinner(new SpinnerNumberModel(64, 0, 64, 1));
     private final VTextField name = new VTextField(20);
     private final JComboBox<String> rarity = new JComboBox(new String[]{"COMMON", "UNCOMMON", "RARE", "EPIC"});
@@ -80,9 +81,11 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     private final JCheckBox translateModel = L10N.checkbox("elementgui.common.enable", new Object[0]);
     private ProcedureSelector glowCondition;
     private final DataListComboBox creativeTab;
-    private final Model normal;
-    private final Model tool;
-    private final SearchableComboBox<Model> renderType;
+    private static final Model normal = new Model.BuiltInModel("Normal");
+    private static final Model tool = new Model.BuiltInModel("Tool");
+    public static final Model[] builtinitemmodels = new Model[] { normal, tool };
+    private final SearchableComboBox<Model> renderType = new SearchableComboBox<>(builtinitemmodels);
+    private JItemPropertiesStatesList customProperties;
     private ProcedureSelector onRightClickedInAir;
     private ProcedureSelector onCrafted;
     private ProcedureSelector onRightClickedOnBlock;
@@ -129,10 +132,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.baubleModel = new SearchableComboBox(new Model[]{this.adefault});
         this.hasGlow = L10N.checkbox("elementgui.common.enable", new Object[0]);
         this.creativeTab = new DataListComboBox(this.mcreator);
-        this.normal = new Model.BuiltInModel("Normal");
         this.baubleModelTexture = new SearchableComboBox();
-        this.tool = new Model.BuiltInModel("Tool");
-        this.renderType = new SearchableComboBox(new Model[]{this.normal, this.tool});
         this.page1group = new ValidationGroup();
         this.damageVsEntity = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 128000.0, 0.1));
         this.enableMeleeDamage = new JCheckBox();
@@ -171,6 +171,11 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.onEquip = new ProcedureSelector(this.withEntry("curios/on_equip"), this.mcreator, L10N.t("elementgui.curiosbauble.on_equip", new Object[0]), Dependency.fromString("x:number/y:number/z:number/world:world/entity:entity/itemstack:itemstack"));
         this.onUnequip = new ProcedureSelector(this.withEntry("curios/on_unequip"), this.mcreator, L10N.t("elementgui.curiosbauble.on_unequip", new Object[0]), Dependency.fromString("x:number/y:number/z:number/world:world/entity:entity/itemstack:itemstack"));
         this.glowCondition = (new ProcedureSelector(this.withEntry("item/condition_glow"), this.mcreator, L10N.t("elementgui.item.condition_glow", new Object[0]), Side.CLIENT, true, BuiltInTypes.LOGIC, Dependency.fromString("x:number/y:number/z:number/world:world/entity:entity/itemstack:itemstack"))).makeInline();
+        specialInformation = new StringListProcedureSelector(this.withEntry("item/special_information"), mcreator, L10N.t("elementgui.common.special_information"), AbstractProcedureSelector.Side.CLIENT, new JStringListField(mcreator, null), 0, Dependency.fromString("x:number/y:number/z:number/entity:entity/world:world/itemstack:itemstack"));
+
+        customProperties = new JItemPropertiesStatesList(mcreator, this);
+        customProperties.setPreferredSize(new Dimension(0, 0)); // prevent resizing beyond the editor tab
+
         this.guiBoundTo.addActionListener((e) -> {
             if (!this.isEditingMode()) {
                 String selected = (String)this.guiBoundTo.getSelectedItem();
@@ -187,6 +192,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
 
         });
         JPanel pane2 = new JPanel(new BorderLayout(10, 10));
+        JPanel cipp = new JPanel(new BorderLayout(10, 10));
         JPanel pane3 = new JPanel(new BorderLayout(10, 10));
         JPanel foodProperties = new JPanel(new BorderLayout(10, 10));
         JPanel advancedProperties = new JPanel(new BorderLayout(10, 10));
@@ -195,22 +201,18 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.texture.setOpaque(false);
         JPanel destal2 = new JPanel(new BorderLayout(0, 10));
         destal2.setOpaque(false);
-        JPanel destal3 = new JPanel(new BorderLayout(15, 15));
-        destal3.setOpaque(false);
-        destal3.add("West", PanelUtils.totalCenterInPanel(ComponentUtils.squareAndBorder(this.texture, L10N.t("elementgui.item.texture", new Object[0]))));
-        destal2.add("North", destal3);
         JPanel destal = new JPanel(new GridLayout(1, 2, 15, 15));
         destal.setOpaque(false);
         JComponent destal1 = PanelUtils.join(0, new Component[]{HelpUtils.wrapWithHelpButton(this.withEntry("item/glowing_effect"), L10N.label("elementgui.item.glowing_effect", new Object[0])), this.hasGlow, this.glowCondition});
         destal.add(HelpUtils.wrapWithHelpButton(this.withEntry("item/special_information"), L10N.label("elementgui.item.tooltip_tip", new Object[0])));
-        destal.add(this.specialInfo);
+        destal.add(this.specialInformation);
         this.hasGlow.setOpaque(false);
         this.hasGlow.setSelected(false);
         this.hasGlow.addActionListener((e) -> {
             this.updateGlowElements();
         });
         destal2.add("Center", PanelUtils.northAndCenterElement(destal, destal1, 10, 10));
-        ComponentUtils.deriveFont(this.specialInfo, 16.0F);
+        ComponentUtils.deriveFont(this.specialInformation, 16.0F);
         ComponentUtils.deriveFont(this.renderType, 16.0F);
         JPanel rent = new JPanel();
         rent.setLayout(new BoxLayout(rent, 3));
@@ -218,13 +220,16 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         rent.add(PanelUtils.join(new Component[]{HelpUtils.wrapWithHelpButton(this.withEntry("item/model"), L10N.label("elementgui.common.item_model", new Object[0])), PanelUtils.join(new Component[]{this.renderType})}));
         this.renderType.setPreferredSize(new Dimension(350, 42));
         this.renderType.setRenderer(new ModelComboBoxRenderer());
-        destal3.add("Center", rent);
         rent.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder((Color)UIManager.get("MCreatorLAF.BRIGHT_COLOR"), 1), L10N.t("elementgui.item.item_3d_model", new Object[0]), 0, 0, this.getFont().deriveFont(12.0F), (Color)UIManager.get("MCreatorLAF.BRIGHT_COLOR")));
+        destal2.add("North", PanelUtils.totalCenterInPanel(
+                PanelUtils.join(ComponentUtils.squareAndBorder(texture, L10N.t("elementgui.item.texture")), rent)));
         JPanel sbbp2 = new JPanel(new BorderLayout());
         sbbp2.setOpaque(false);
         sbbp2.add("West", destal2);
         pane2.add("Center", PanelUtils.totalCenterInPanel(PanelUtils.centerInPanel(sbbp2)));
         pane2.setOpaque(false);
+        cipp.setOpaque(false);
+        cipp.add("Center", customProperties);
         JPanel subpane2 = new JPanel(new GridLayout(15, 2, 2, 2));
         ComponentUtils.deriveFont(this.name, 16.0F);
         subpane2.add(HelpUtils.wrapWithHelpButton(this.withEntry("common/gui_name"), L10N.label("elementgui.common.name_in_gui", new Object[0])));
@@ -410,6 +415,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
 
 
         this.addPage(L10N.t("elementgui.common.page_visual", new Object[0]), pane2);
+        this.addPage(L10N.t("elementgui.item.page_item_states"), cipp);
         this.addPage(L10N.t("elementgui.common.page_properties", new Object[0]), pane3);
         this.addPage(L10N.t("elementgui.item.food_properties", new Object[0]), foodProperties);
         this.addPage(L10N.t("elementgui.common.page_advanced_properties", new Object[0]), advancedProperties);
@@ -451,16 +457,18 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.onEntityHitWith.refreshListKeepSelected();
         this.onItemInInventoryTick.refreshListKeepSelected();
         this.onItemInUseTick.refreshListKeepSelected();
+        this.specialInformation.refreshListKeepSelected();
         this.onStoppedUsing.refreshListKeepSelected();
         this.onEntitySwing.refreshListKeepSelected();
         this.onDroppedByPlayer.refreshListKeepSelected();
+        this.customProperties.reloadDataLists();
         this.onFinishUsingItem.refreshListKeepSelected();
         this.curioTick.refreshListKeepSelected();
         this.onEquip.refreshListKeepSelected();
         this.onUnequip.refreshListKeepSelected();
         this.glowCondition.refreshListKeepSelected();
         ComboBoxUtil.updateComboBoxContents(this.creativeTab, ElementUtil.loadAllTabs(this.mcreator.getWorkspace()), new DataListEntry.Dummy("MISC"));
-        ComboBoxUtil.updateComboBoxContents(this.renderType, ListUtils.merge(Arrays.asList(this.normal, this.tool), (Collection)Model.getModelsWithTextureMaps(this.mcreator.getWorkspace()).stream().filter((el) -> {
+        ComboBoxUtil.updateComboBoxContents(renderType, ListUtils.merge(Arrays.asList(CuriosBaubleGUI.builtinitemmodels), (Collection)Model.getModelsWithTextureMaps(this.mcreator.getWorkspace()).stream().filter((el) -> {
             return el.getType() == Type.JSON || el.getType() == Type.OBJ;
         }).collect(Collectors.toList())));
         ComboBoxUtil.updateComboBoxContents(this.guiBoundTo, ListUtils.merge(Collections.singleton("<NONE>"), (Collection)this.mcreator.getWorkspace().getModElements().stream().filter((var) -> {
@@ -475,11 +483,13 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     }
 
     protected AggregatedValidationResult validatePage(int page) {
-        if (page == 1) {
-            return new AggregatedValidationResult(new IValidable[]{this.name});
-        } else {
-            return (AggregatedValidationResult)(page == 0 ? new AggregatedValidationResult(new ValidationGroup[]{this.page1group}) : new AggregatedValidationResult.PASS());
-        }
+        if (page == 0)
+            return new AggregatedValidationResult(page1group);
+        else if (page == 1)
+            return customProperties.getValidationResult();
+        else if (page == 2)
+            return new AggregatedValidationResult(name);
+        return new AggregatedValidationResult.PASS();
     }
 
     public void openInEditingMode(CuriosBauble item) {
@@ -492,6 +502,8 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.rarity.setSelectedItem(item.rarity);
         this.slotType.setSelectedItem(item.slotType);
         this.addSlot.setSelected(item.addSlot);
+        this.customProperties.setProperties(item.customProperties);
+        this.customProperties.setStates(item.states);
         this.slotAmount.setValue(item.slotAmount);
         this.friendlyPigs.setSelected(item.friendlyPigs);
         this.rotateModel.setSelected(item.rotateModel);
@@ -499,9 +511,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.hasModel.setSelected(item.hasModel);
         this.enderMask.setSelected(item.enderMask);
         this.texture.setTextureFromTextureName(item.texture);
-        this.specialInfo.setText((String)item.specialInfo.stream().map((info) -> {
-            return info.replace(",", "\\,");
-        }).collect(Collectors.joining(",")));
+        this.specialInformation.setSelectedProcedure(item.specialInformation);
         this.onRightClickedInAir.setSelectedProcedure(item.onRightClickedInAir);
         this.onRightClickedOnBlock.setSelectedProcedure(item.onRightClickedOnBlock);
         this.onCrafted.setSelectedProcedure(item.onCrafted);
@@ -607,15 +617,12 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         item.animation = (String)this.animation.getSelectedItem();
         item.onFinishUsingItem = this.onFinishUsingItem.getSelectedProcedure();
         item.eatResultItem = this.eatResultItem.getBlock();
-        item.specialInfo = StringUtils.splitCommaSeparatedStringListWithEscapes(this.specialInfo.getText());
+        item.specialInformation = specialInformation.getSelectedProcedure();
         item.texture = this.texture.getID();
-        Model.Type modelType = ((Model)Objects.requireNonNull((Model)this.renderType.getSelectedItem())).getType();
-        item.renderType = 0;
-        if (modelType == Type.JSON) {
-            item.renderType = 1;
-        } else if (modelType == Type.OBJ) {
-            item.renderType = 2;
-        }
+        item.renderType = Item.encodeModelType(Objects.requireNonNull(renderType.getSelectedItem()).getType());
+
+        item.customProperties = customProperties.getProperties();
+        item.states = customProperties.getStates();
 
         item.customModelName = ((Model)Objects.requireNonNull((Model)this.renderType.getSelectedItem())).getReadableName();
         return item;

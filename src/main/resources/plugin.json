@@ -1,11 +1,12 @@
 {
   "id": "curios_api_plugin",
-  "minversion": 202300108712,
+  "minversion": 202300400000,
+  "maxversion": 202300499999,
   "weight": 10,
   "javaplugin": "net.nerdypuzzle.curios.Launcher",
   "info": {
     "name": "Curios API Plugin",
-    "version": "4.7",
+    "version": "4.8",
     "description": "Adds Curios API support for 1.18.2, 1.19.2, 1.19.4 and 1.20.1",
     "author": "NerdyPuzzle"
   }

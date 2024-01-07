@@ -1,6 +1,5 @@
 package net.nerdypuzzle.curios.element.types;
 
-import net.mcreator.element.BaseType;
 import net.mcreator.element.ModElementType;
 import net.nerdypuzzle.curios.ui.modgui.CuriosBaubleGUI;
 
@@ -12,7 +11,7 @@ public class PluginElementTypes {
     public static void load() {
 
         CURIOSBAUBLE = register(
-                new ModElementType<>("curiosbauble", (Character) 'B', BaseType.ITEM, CuriosBaubleGUI::new, CuriosBauble.class)
+                new ModElementType<>("curiosbauble", (Character) 'B', CuriosBaubleGUI::new, CuriosBauble.class)
         );
 
     }

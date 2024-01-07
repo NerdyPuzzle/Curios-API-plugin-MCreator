@@ -1,16 +1,25 @@
 {
     "parent": "item/generated",
     "textures": {
-        <#if var_item?? && var_item=="helmet">
-            "layer0": "${modid}:items/${data.textureHelmet}"
-        <#elseif var_item?? && var_item=="body">
-            "layer0": "${modid}:items/${data.textureBody}"
-        <#elseif var_item?? && var_item=="leggings">
-            "layer0": "${modid}:items/${data.textureLeggings}"
-        <#elseif var_item?? && var_item=="boots">
-            "layer0": "${modid}:items/${data.textureBoots}"
+        <#if var_item??>
+            "layer0": "${modid}:item/${data.getItemTextureFor(var_item)}"
         <#else>
-            "layer0": "${modid}:items/${data.texture}"
+            "layer0": "${modid}:item/${data.texture}"
         </#if>
     }
+    <#if data.getModels?? && data.getModels()?has_content>,
+    "overrides": [
+        <#list data.getModels() as model>
+        {
+            "predicate": {
+                <#list model.stateMap.keySet() as property>
+                    <#assign value = model.stateMap.get(property)>
+                    "${generator.map(property.getPrefixedName(registryname + "_"), "itemproperties")}": ${value?is_boolean?then(value?then("1", "0"), value)}<#sep>,
+                </#list>
+            },
+            "model": "${modid}:item/${registryname}_${model?index}"
+        }<#sep>,
+        </#list>
+    ]
+    </#if>
 }
