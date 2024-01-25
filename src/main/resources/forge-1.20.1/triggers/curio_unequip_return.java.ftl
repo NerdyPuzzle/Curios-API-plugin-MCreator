@@ -7,7 +7,7 @@
 			"x": "event.getEntity().getX()",
 			"y": "event.getEntity().getY()",
 			"z": "event.getEntity().getZ()",
-			"world": "event.getEntity().level",
+			"world": "event.getEntity().level()",
 			"entity": "event.getEntity()",
 			"event": "event"
 			}/>
