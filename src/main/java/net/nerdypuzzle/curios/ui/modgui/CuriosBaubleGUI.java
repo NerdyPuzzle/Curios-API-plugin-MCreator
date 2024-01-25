@@ -483,6 +483,8 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     }
 
     protected AggregatedValidationResult validatePage(int page) {
+        if (!mcreator.getWorkspaceSettings().getDependencies().contains("curios_api"))
+            return new AggregatedValidationResult.FAIL(L10N.t("elementgui.curiosbauble.needs_api", new Object[0]));
         if (page == 0)
             return new AggregatedValidationResult(page1group);
         else if (page == 1)

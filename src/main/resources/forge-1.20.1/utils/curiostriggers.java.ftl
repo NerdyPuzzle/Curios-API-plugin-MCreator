@@ -8,7 +8,7 @@ public void curioTick(SlotContext slotContext, ItemStack stack) {
 		"x": "slotContext.entity().getX()",
 		"y": "slotContext.entity().getY()",
 		"z": "slotContext.entity().getZ()",
-		"world": "slotContext.entity().level",
+		"world": "slotContext.entity().level()",
 		"entity": "slotContext.entity()",
 		"itemstack": "stack"
 	}/>
@@ -24,7 +24,7 @@ public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stac
 		"x": "slotContext.entity().getX()",
 		"y": "slotContext.entity().getY()",
 		"z": "slotContext.entity().getZ()",
-		"world": "slotContext.entity().level",
+		"world": "slotContext.entity().level()",
 		"entity": "slotContext.entity()",
 		"itemstack": "stack"
 	}/>
@@ -40,7 +40,7 @@ public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack sta
 		"x": "slotContext.entity().getX()",
 		"y": "slotContext.entity().getY()",
 		"z": "slotContext.entity().getZ()",
-		"world": "slotContext.entity().level",
+		"world": "slotContext.entity().level()",
 		"entity": "slotContext.entity()",
 		"itemstack": "stack"
 	}/>
