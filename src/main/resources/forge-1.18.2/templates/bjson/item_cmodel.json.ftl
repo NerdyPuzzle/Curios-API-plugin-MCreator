@@ -3,13 +3,13 @@
   "parent": "${modid}:custom/${data.getItemCustomModelNameFor(var_item)}",
   "textures": {
     <@textures data.getItemModelTextureMap(var_item)/>
-    "particle": "${modid}:item/${data.getItemTextureFor(var_item)}"
+    "particle": "${modid}:items/${data.getItemTextureFor(var_item)}"
   }
 <#else>
   "parent": "${modid}:custom/${data.customModelName.split(":")[0]}",
   "textures": {
     <@textures data.getTextureMap()/>
-    "particle": "${modid}:item/${data.texture}"
+    "particle": "${modid}:items/${data.texture}"
   }
 </#if>
     <#if data.getModels?? && data.getModels()?has_content>,
@@ -32,7 +32,7 @@
 <#macro textures textureMap>
     <#if textureMap??>
         <#list textureMap.entrySet() as texture>
-            "${texture.getKey()}": "${modid}:block/${texture.getValue()}",
+            "${texture.getKey()}": "${modid}:blocks/${texture.getValue()}",
         </#list>
     </#if>
 </#macro>

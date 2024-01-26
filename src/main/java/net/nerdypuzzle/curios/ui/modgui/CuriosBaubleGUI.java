@@ -16,6 +16,8 @@ import net.mcreator.element.ModElementType;
 import net.mcreator.element.parts.TabEntry;
 import net.mcreator.element.types.GUI;
 import net.mcreator.element.types.Item;
+import net.mcreator.generator.GeneratorTemplate;
+import net.mcreator.generator.template.TemplateGeneratorException;
 import net.mcreator.minecraft.DataListEntry;
 import net.mcreator.minecraft.ElementUtil;
 import net.mcreator.ui.MCreator;
@@ -55,6 +57,7 @@ import net.mcreator.workspace.elements.VariableTypeLoader.BuiltInTypes;
 import net.mcreator.workspace.resources.Model;
 import net.mcreator.workspace.resources.Model.Type;
 import net.nerdypuzzle.curios.element.types.CuriosBauble;
+import net.nerdypuzzle.curios.element.types.PluginElementTypes;
 
 public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     private TextureHolder texture;
@@ -62,7 +65,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     private final JSpinner stackSize = new JSpinner(new SpinnerNumberModel(64, 0, 64, 1));
     private final VTextField name = new VTextField(20);
     private final JComboBox<String> rarity = new JComboBox(new String[]{"COMMON", "UNCOMMON", "RARE", "EPIC"});
-    private final JComboBox<String> slotType = new JComboBox(new String[]{"HEAD", "NECKLACE", "BACK", "BODY", "BRACELET", "HANDS", "RING", "BELT", "CHARM", "CURIO"});
+    private final SearchableComboBox<String> slotType = new SearchableComboBox<>();
     private final MCItemHolder recipeRemainder;
     private final JSpinner enchantability;
     private final JSpinner useDuration;
@@ -397,6 +400,12 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.rotateModel.setEnabled(false);
         this.translateModel.setEnabled(false);
 
+        this.slotType.addActionListener((e) -> {
+            if (this.slotType.getSelectedItem() != null)
+                this.addSlot.setEnabled(this.slotType.getSelectedItem().equals("HEAD") || this.slotType.getSelectedItem().equals("NECKLACE") || this.slotType.getSelectedItem().equals("BACK") || this.slotType.getSelectedItem().equals("BODY") || this.slotType.getSelectedItem().equals("BRACELET") || this.slotType.getSelectedItem().equals("HANDS") || this.slotType.getSelectedItem().equals("RING") || this.slotType.getSelectedItem().equals("BELT") || this.slotType.getSelectedItem().equals("CHARM") || this.slotType.getSelectedItem().equals("CURIO"));
+            this.slotAmount.setEnabled(this.addSlot.isSelected() && this.addSlot.isEnabled());
+        });
+
         this.addSlot.addActionListener((e) -> {
             this.slotAmount.setEnabled(this.addSlot.isSelected());
         });
@@ -480,6 +489,9 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         ComboBoxUtil.updateComboBoxContents(this.baubleModel, ListUtils.merge(Collections.singletonList(this.adefault), (Collection)Model.getModels(this.mcreator.getWorkspace()).stream().filter((el) -> {
             return el.getType() == Type.JAVA || el.getType() == Type.MCREATOR;
         }).collect(Collectors.toList())));
+        ComboBoxUtil.updateComboBoxContents(this.slotType, ListUtils.merge(List.of("HEAD", "NECKLACE", "BACK", "BODY", "BRACELET", "HANDS", "RING", "BELT", "CHARM", "CURIO"), (List)this.mcreator.getWorkspace().getModElements().stream().filter((var) -> {
+            return var.getType() == PluginElementTypes.CURIOSSLOT;
+        }).map(ModElement::getName).collect(Collectors.toList())));
     }
 
     protected AggregatedValidationResult validatePage(int page) {
@@ -492,6 +504,20 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         else if (page == 2)
             return new AggregatedValidationResult(name);
         return new AggregatedValidationResult.PASS();
+    }
+
+    @Override
+    protected void afterGeneratableElementStored() {
+        this.mcreator.getWorkspace().getModElements().stream().forEach((var) -> {
+            if (var.getType() == PluginElementTypes.CURIOSSLOT) {
+                try {
+                    mcreator.getGenerator().generateElement(var.getGeneratableElement(), false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                var.reinit(mcreator.getWorkspace());
+            }
+        });
     }
 
     public void openInEditingMode(CuriosBauble item) {
@@ -559,12 +585,12 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
             this.renderType.setSelectedItem(modelBauble);
         }
 
-        this.slotAmount.setEnabled(this.addSlot.isSelected());
+        this.addSlot.setEnabled(this.slotType.getSelectedItem().equals("HEAD") || this.slotType.getSelectedItem().equals("NECKLACE") || this.slotType.getSelectedItem().equals("BACK") || this.slotType.getSelectedItem().equals("BODY") || this.slotType.getSelectedItem().equals("BRACELET") || this.slotType.getSelectedItem().equals("HANDS") || this.slotType.getSelectedItem().equals("RING") || this.slotType.getSelectedItem().equals("BELT") || this.slotType.getSelectedItem().equals("CHARM") || this.slotType.getSelectedItem().equals("CURIO"));
+        this.slotAmount.setEnabled(this.addSlot.isSelected() && this.addSlot.isEnabled());
         this.baubleModel.setEnabled(this.hasModel.isSelected());
         this.baubleModelTexture.setEnabled(this.hasModel.isSelected());
         this.rotateModel.setEnabled(this.hasModel.isSelected());
         this.translateModel.setEnabled(this.hasModel.isSelected());
-
     }
 
     public CuriosBauble getElementFromGUI() {
@@ -627,6 +653,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         item.states = customProperties.getStates();
 
         item.customModelName = ((Model)Objects.requireNonNull((Model)this.renderType.getSelectedItem())).getReadableName();
+
         return item;
     }
 }
