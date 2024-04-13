@@ -43,6 +43,7 @@ forge-1.19.4:
         runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.5.2")
         compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.5.2:api")
       }
+      
       minecraft {
         runs {
            client {
@@ -76,6 +77,7 @@ forge-1.20.1:
           runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
           compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1:api")
         }
+        
         minecraft {
           runs {
              client {
@@ -96,4 +98,21 @@ forge-1.20.1:
 
     update_files:
         - ~
+
+neoforge-1.20.4:
+    gradle: |
+        repositories {
+        maven {
+          url = "https://maven.theillusivec4.top/"
+          }
+        }
+        
+        dependencies {
+          runtimeOnly "top.theillusivec4.curios:curios-neoforge:7.3.4+1.20.4"
+          compileOnly "top.theillusivec4.curios:curios-neoforge:7.3.4+1.20.4:api"
+        }
+
+    update_files:
+        - ~
+
 name: "Curios API"
