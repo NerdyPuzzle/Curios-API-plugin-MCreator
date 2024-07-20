@@ -1,70 +1,4 @@
 ---
-forge-1.18.2:
-  gradle: |
-      repositories {
-      maven {
-        url = "https://maven.theillusivec4.top/"
-        }
-      }
-      
-      dependencies {
-        runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1")
-        compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1:api")
-      }
-
-  update_files:
-    - ~
-
-forge-1.19.2:
-  gradle: |
-      repositories {
-      maven {
-        url = "https://maven.theillusivec4.top/"
-        }
-      }
-      
-      dependencies {
-        runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
-        compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")
-      }
-
-  update_files:
-    - ~
-
-forge-1.19.4:
-  gradle: |
-      repositories {
-      maven {
-        url = "https://maven.theillusivec4.top/"
-        }
-      }
-      
-      dependencies {
-        runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.5.2")
-        compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.5.2:api")
-      }
-      
-      minecraft {
-        runs {
-           client {
-              property 'mixin.env.remapRefMap', 'true'
-              property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-          }
-
-            server {
-              property 'mixin.env.remapRefMap', 'true'
-              property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-          }
-            data {
-              property 'mixin.env.remapRefMap', 'true'
-              property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-          }
-        }
-      }
-
-  update_files:
-    - ~
-
 forge-1.20.1:
     gradle: |
         repositories {
@@ -99,7 +33,7 @@ forge-1.20.1:
     update_files:
         - ~
 
-neoforge-1.20.4:
+neoforge-1.20.6:
     gradle: |
         repositories {
         maven {
@@ -108,8 +42,8 @@ neoforge-1.20.4:
         }
         
         dependencies {
-          runtimeOnly "top.theillusivec4.curios:curios-neoforge:7.3.4+1.20.4"
-          compileOnly "top.theillusivec4.curios:curios-neoforge:7.3.4+1.20.4:api"
+          runtimeOnly "top.theillusivec4.curios:curios-neoforge:8.0.1+1.20.6"
+          compileOnly "top.theillusivec4.curios:curios-neoforge:8.0.1+1.20.6:api"
         }
 
     update_files:

@@ -1,5 +1,6 @@
 package net.nerdypuzzle.curios.ui.modgui;
 
+import net.mcreator.element.parts.TextureHolder;
 import net.mcreator.generator.GeneratorUtils;
 import net.mcreator.io.FileIO;
 import net.mcreator.ui.MCreator;
@@ -8,7 +9,7 @@ import net.mcreator.ui.component.util.PanelUtils;
 import net.mcreator.ui.dialogs.TypedTextureSelectorDialog;
 import net.mcreator.ui.help.HelpUtils;
 import net.mcreator.ui.init.L10N;
-import net.mcreator.ui.minecraft.TextureHolder;
+import net.mcreator.ui.minecraft.TextureSelectionButton;
 import net.mcreator.ui.modgui.ModElementGUI;
 import net.mcreator.ui.validation.AggregatedValidationResult;
 import net.mcreator.ui.validation.ValidationGroup;
@@ -26,7 +27,7 @@ import java.io.File;
 
 public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
 
-    private TextureHolder texture;
+    private TextureSelectionButton texture;
     private final VTextField name;
     private final JSpinner amount;
 
@@ -42,7 +43,7 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
     }
 
     protected void initGUI() {
-        texture = new TextureHolder(new TypedTextureSelectorDialog(this.mcreator, TextureType.SCREEN));
+        texture = new TextureSelectionButton(new TypedTextureSelectorDialog(this.mcreator, TextureType.SCREEN));
         this.texture.setOpaque(false);
 
         JComponent textureComponent = PanelUtils.totalCenterInPanel(ComponentUtils.squareAndBorder(HelpUtils.wrapWithHelpButton(this.withEntry("curios/slot_texture"), this.texture), L10N.t("elementgui.common.texture", new Object[0])));
@@ -79,7 +80,7 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
     }
 
     public void openInEditingMode(CuriosSlot slot) {
-        texture.setTextureFromTextureName(StringUtils.removeEnd(slot.texture, ".png"));
+        texture.setTexture(new TextureHolder(getModElement().getWorkspace(), StringUtils.removeEnd(slot.texture, ".png")));
         name.setText(slot.name);
         amount.setValue(slot.amount);
     }
@@ -87,14 +88,14 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
     @Override
     protected void afterGeneratableElementStored() {
         if (texture.hasTexture()) {
-           FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/screens/" + texture.getID() + ".png"),
-                   new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/curios/textures/slot/" + texture.getID() + ".png"));
+           FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/screens/" + texture.getTextureHolder().name() + ".png"),
+                   new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/curios/textures/slot/" + texture.getTextureHolder().name() + ".png"));
         }
     }
 
     public CuriosSlot getElementFromGUI() {
         CuriosSlot slot = new CuriosSlot(this.modElement);
-        slot.texture = texture.getID() + ".png";
+        slot.texture = texture.getTextureHolder().name() + ".png";
         slot.name = name.getText();
         slot.amount = (int) amount.getValue();
         return slot;

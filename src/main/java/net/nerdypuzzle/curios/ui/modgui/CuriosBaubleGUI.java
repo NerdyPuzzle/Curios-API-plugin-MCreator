@@ -16,8 +16,6 @@ import net.mcreator.element.ModElementType;
 import net.mcreator.element.parts.TabEntry;
 import net.mcreator.element.types.GUI;
 import net.mcreator.element.types.Item;
-import net.mcreator.generator.GeneratorTemplate;
-import net.mcreator.generator.template.TemplateGeneratorException;
 import net.mcreator.minecraft.DataListEntry;
 import net.mcreator.minecraft.ElementUtil;
 import net.mcreator.ui.MCreator;
@@ -32,10 +30,9 @@ import net.mcreator.ui.help.HelpUtils;
 import net.mcreator.ui.init.L10N;
 import net.mcreator.ui.init.UIRES;
 import net.mcreator.ui.laf.renderer.ModelComboBoxRenderer;
-import net.mcreator.ui.laf.renderer.WTextureComboBoxRenderer;
 import net.mcreator.ui.minecraft.DataListComboBox;
 import net.mcreator.ui.minecraft.MCItemHolder;
-import net.mcreator.ui.minecraft.TextureHolder;
+import net.mcreator.ui.minecraft.TextureSelectionButton;
 import net.mcreator.ui.minecraft.states.item.JItemPropertiesStatesList;
 import net.mcreator.ui.modgui.ModElementGUI;
 import net.mcreator.ui.procedure.AbstractProcedureSelector;
@@ -60,7 +57,7 @@ import net.nerdypuzzle.curios.element.types.CuriosBauble;
 import net.nerdypuzzle.curios.element.types.PluginElementTypes;
 
 public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
-    private TextureHolder texture;
+    private TextureSelectionButton texture;
     private StringListProcedureSelector specialInformation;
     private final JSpinner stackSize = new JSpinner(new SpinnerNumberModel(64, 0, 64, 1));
     private final VTextField name = new VTextField(20);
@@ -200,7 +197,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         JPanel foodProperties = new JPanel(new BorderLayout(10, 10));
         JPanel advancedProperties = new JPanel(new BorderLayout(10, 10));
         JPanel pane4 = new JPanel(new BorderLayout(10, 10));
-        this.texture = new TextureHolder(new TypedTextureSelectorDialog(this.mcreator, TextureType.ITEM));
+        this.texture = new TextureSelectionButton(new TypedTextureSelectorDialog(this.mcreator, TextureType.ITEM));
         this.texture.setOpaque(false);
         JPanel destal2 = new JPanel(new BorderLayout(0, 10));
         destal2.setOpaque(false);
@@ -538,7 +535,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         this.translateModel.setSelected(item.translateModel);
         this.hasModel.setSelected(item.hasModel);
         this.enderMask.setSelected(item.enderMask);
-        this.texture.setTextureFromTextureName(item.texture);
+        this.texture.setTexture(item.texture);
         this.specialInformation.setSelectedProcedure(item.specialInformation);
         this.onRightClickedInAir.setSelectedProcedure(item.onRightClickedInAir);
         this.onRightClickedOnBlock.setSelectedProcedure(item.onRightClickedOnBlock);
@@ -646,7 +643,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         item.onFinishUsingItem = this.onFinishUsingItem.getSelectedProcedure();
         item.eatResultItem = this.eatResultItem.getBlock();
         item.specialInformation = specialInformation.getSelectedProcedure();
-        item.texture = this.texture.getID();
+        item.texture = this.texture.getTextureHolder();
         item.renderType = Item.encodeModelType(Objects.requireNonNull(renderType.getSelectedItem()).getType());
 
         item.customProperties = customProperties.getProperties();

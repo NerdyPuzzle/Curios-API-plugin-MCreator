@@ -6,6 +6,7 @@ import java.util.*;
 import net.mcreator.element.GeneratableElement;
 import net.mcreator.element.parts.MItemBlock;
 import net.mcreator.element.parts.TabEntry;
+import net.mcreator.element.parts.TextureHolder;
 import net.mcreator.element.parts.procedure.Procedure;
 import net.mcreator.element.parts.procedure.StringListProcedure;
 import net.mcreator.element.types.Item;
@@ -21,12 +22,13 @@ import net.mcreator.ui.workspace.resources.TextureType;
 import net.mcreator.util.image.ImageUtils;
 import net.mcreator.workspace.elements.ModElement;
 import net.mcreator.workspace.resources.Model;
+import net.mcreator.workspace.resources.Texture;
 import net.mcreator.workspace.resources.TexturedModel;
 import net.mcreator.workspace.resources.Model.Type;
 
 public class CuriosBauble extends GeneratableElement implements IItem, IItemWithModel, ITabContainedElement, IItemWithTexture {
     public int renderType;
-    public String texture;
+    public TextureHolder texture;
     public String customModelName;
     public String name;
     public String rarity;
@@ -142,21 +144,21 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
     }
 
     public BufferedImage generateModElementPicture() {
-        return ImageUtils.resizeAndCrop(this.getModElement().getFolderManager().getTextureImageIcon(this.texture, TextureType.ITEM).getImage(), 32);
+        return ImageUtils.resizeAndCrop(Texture.fromName(getModElement().getWorkspace(), TextureType.ITEM, this.texture.getRawTextureName()).getTextureIcon(getModElement().getWorkspace()).getImage(), 32);
     }
 
     public Model getItemModel() {
         return Model.getModelByParams(getModElement().getWorkspace(), customModelName, Item.decodeModelType(renderType));
     }
 
-    public Map<String, String> getTextureMap() {
+    public Map<String, TextureHolder> getTextureMap() {
         if (getItemModel() instanceof TexturedModel textured && textured.getTextureMapping() != null)
             return textured.getTextureMapping().getTextureMap();
         return new HashMap<>();
     }
 
-    public TabEntry getCreativeTab() {
-        return this.creativeTab;
+    public List<TabEntry> getCreativeTabs() {
+        return List.of(this.creativeTab);
     }
 
     @Override
@@ -164,7 +166,7 @@ public class CuriosBauble extends GeneratableElement implements IItem, IItemWith
         return providedMCItems();
     }
 
-    public String getTexture() {
+    public TextureHolder getTexture() {
         return this.texture;
     }
 
