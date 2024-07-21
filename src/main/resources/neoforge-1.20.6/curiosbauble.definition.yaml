@@ -4,43 +4,43 @@ global_templates:
 
   - template: bjson/identifiers/back.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/back.json"
+    name: "@RESROOT/data/curios/tags/items/back.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BACK')?size != 0}"
   - template: bjson/identifiers/belt.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/belt.json"
+    name: "@RESROOT/data/curios/tags/items/belt.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BELT')?size != 0}"
   - template: bjson/identifiers/body.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/body.json"
+    name: "@RESROOT/data/curios/tags/items/body.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BODY')?size != 0}"
   - template: bjson/identifiers/bracelet.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/bracelet.json"
+    name: "@RESROOT/data/curios/tags/items/bracelet.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BRACELET')?size != 0}"
   - template: bjson/identifiers/charm.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/charm.json"
+    name: "@RESROOT/data/curios/tags/items/charm.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CHARM')?size != 0}"
   - template: bjson/identifiers/curio.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/curio.json"
+    name: "@RESROOT/data/curios/tags/items/curio.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CURIO')?size != 0}"
   - template: bjson/identifiers/hands.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/hands.json"
+    name: "@RESROOT/data/curios/tags/items/hands.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HANDS')?size != 0}"
   - template: bjson/identifiers/head.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/head.json"
+    name: "@RESROOT/data/curios/tags/items/head.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HEAD')?size != 0}"
   - template: bjson/identifiers/necklace.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/necklace.json"
+    name: "@RESROOT/data/curios/tags/items/necklace.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'NECKLACE')?size != 0}"
   - template: bjson/identifiers/ring.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/item/ring.json"
+    name: "@RESROOT/data/curios/tags/items/ring.json"
     condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'RING')?size != 0}"
 
   - template: rendering/definitions.java.ftl
