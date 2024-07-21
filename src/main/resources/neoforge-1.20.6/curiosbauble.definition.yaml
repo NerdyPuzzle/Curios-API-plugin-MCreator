@@ -1,48 +1,47 @@
 global_templates:
   - template: bauble/slot_builder.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameCuriosSlots.java"
-    canLock: true
 
   - template: bjson/identifiers/back.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/back.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/back.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BACK')?size != 0}"
   - template: bjson/identifiers/belt.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/belt.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/belt.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BELT')?size != 0}"
   - template: bjson/identifiers/body.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/body.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/body.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BODY')?size != 0}"
   - template: bjson/identifiers/bracelet.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/bracelet.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/bracelet.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BRACELET')?size != 0}"
   - template: bjson/identifiers/charm.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/charm.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/charm.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CHARM')?size != 0}"
   - template: bjson/identifiers/curio.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/curio.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/curio.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CURIO')?size != 0}"
   - template: bjson/identifiers/hands.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/hands.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/hands.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HANDS')?size != 0}"
   - template: bjson/identifiers/head.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/head.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/head.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HEAD')?size != 0}"
   - template: bjson/identifiers/necklace.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/necklace.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/necklace.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'NECKLACE')?size != 0}"
   - template: bjson/identifiers/ring.json.ftl
     writer: json
-    name: "@RESROOT/data/curios/tags/items/ring.json"
-    canLock: true
+    name: "@RESROOT/data/curios/tags/item/ring.json"
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'RING')?size != 0}"
 
   - template: rendering/definitions.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameLayerDefinitions.java"
