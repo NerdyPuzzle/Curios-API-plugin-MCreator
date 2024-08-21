@@ -1,10 +1,14 @@
 {
   "replace": false,
   "values": [
+    <#assign baubles = []>
     <#list w.getGElementsOfType("curiosbauble") as bauble>
       <#if bauble.slotType == "${data.getModElement().getName()}">
-        "${modid}:${bauble.getModElement().getRegistryName()}"<#sep>,
+        <#assign baubles += [bauble]>
       </#if>
+    </#list>
+    <#list baubles as bauble>
+      "${modid}:${bauble.getModElement().getRegistryName()}"<#sep>,
     </#list>
   ]
 }
