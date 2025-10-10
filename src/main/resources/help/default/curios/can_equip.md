@@ -1,0 +1,1 @@
+This procedure will be called before the bauble is placed into a curios slot to check if the return value of the selected procedure is true. If it is not, the bauble will not be equipped.

@@ -1,0 +1,1 @@
+The selected item here will become a curios compatible bauble that can be inserted in the selected curios slot.

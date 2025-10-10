@@ -27,7 +27,7 @@ dependencies {
 }
 
 tasks.jar {
-    archiveFileName.set("Nerdys_CuriosAPI_Plugin.zip")
+    archiveFileName.set("Nerdys_New_CuriosAPI_Plugin.zip")
 }
 
 tasks.register('runMCreatorWithPlugin', JavaExec) {

@@ -1,0 +1,1 @@
+If this option is enabled, you will be able to walk on powdered snow while the bauble is equipped.

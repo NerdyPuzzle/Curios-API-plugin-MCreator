@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Launcher extends JavaPlugin {
 
-	private static final Logger LOG = LogManager.getLogger("GeckoLib Plugin");
+	private static final Logger LOG = LogManager.getLogger("Curios Plugin");
 
 	public Launcher(Plugin plugin) {
 		super(plugin);

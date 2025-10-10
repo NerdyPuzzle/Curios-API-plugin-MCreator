@@ -1,0 +1,1 @@
+The sound when the player equips this bauble in a curios slot.
