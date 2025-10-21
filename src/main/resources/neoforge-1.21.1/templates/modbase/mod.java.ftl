@@ -3,7 +3,6 @@ package ${package};
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.lang.reflect.Method;
 
 @Mod("${modid}") public class ${JavaModName} {
 
@@ -94,7 +93,7 @@ import java.lang.reflect.Method;
 
 	public static class CuriosApiHelper {
 	    private static final EntityCapability<IItemHandler, Void> CURIOS_INVENTORY = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "item_handler"), IItemHandler.class);
-	    
+
         public static IItemHandler getCuriosInventory(Player player) {
             if (ModList.get().isLoaded("curios")) {
                 return player.getCapability(CURIOS_INVENTORY);

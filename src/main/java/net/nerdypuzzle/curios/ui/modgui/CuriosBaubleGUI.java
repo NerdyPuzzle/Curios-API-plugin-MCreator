@@ -285,11 +285,12 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
     public void reloadDataLists() {
         super.reloadDataLists();
         baubleModel.removeActionListener(modelListener);
-        equipCondition.refreshListKeepSelected();
-        unequipCondition.refreshListKeepSelected();
-        curioTick.refreshListKeepSelected();
-        onEquip.refreshListKeepSelected();
-        onUnequip.refreshListKeepSelected();
+        AbstractProcedureSelector.ReloadContext context = AbstractProcedureSelector.ReloadContext.create(mcreator.getWorkspace());
+        equipCondition.refreshListKeepSelected(context);
+        unequipCondition.refreshListKeepSelected(context);
+        curioTick.refreshListKeepSelected(context);
+        onEquip.refreshListKeepSelected(context);
+        onUnequip.refreshListKeepSelected(context);
         ComboBoxUtil.updateComboBoxContents(item, mcreator.getWorkspace().getModElements().stream().filter((var) -> {
             return var.getType() == ModElementType.ITEM;
         }).map(ModElement::getName).collect(Collectors.toList()));
