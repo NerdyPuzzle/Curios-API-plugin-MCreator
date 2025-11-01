@@ -312,7 +312,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         }).map(bauble -> ((CuriosBauble)bauble.getGeneratableElement())).collect(Collectors.toList());
         if (item.getSelectedItem() != null) {
             for (CuriosBauble bauble : baubles)
-                if (bauble.item.equals(item.getSelectedItem()))
+                if (bauble.item != null && bauble.item.equals(item.getSelectedItem()))
                     return true;
         }
         return false;
