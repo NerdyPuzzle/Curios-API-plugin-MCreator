@@ -49,7 +49,7 @@ public class ${name}Renderer implements ICurioRenderer {
 	    ICurioRenderer.followHeadRotations(entity, this.humanoidModel.head);
 	    ICurioRenderer.followBodyRotations(entity, this.humanoidModel);
 	    this.humanoidModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-	    VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.entityTranslucent(TEXTURE), stack.hasFoil());
+	    VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(TEXTURE), stack.hasFoil());
 	    this.humanoidModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY);
   }
 

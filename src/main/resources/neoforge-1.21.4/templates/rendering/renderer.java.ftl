@@ -40,7 +40,7 @@ public class ${name}Renderer implements ICurioRenderer.HumanoidRender {
             <#else>
                 "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap())
             </#if>
-        )), (Function<ResourceLocation, RenderType>) RenderType::entityTranslucent);
+        )));
 	}
 
     @Override
