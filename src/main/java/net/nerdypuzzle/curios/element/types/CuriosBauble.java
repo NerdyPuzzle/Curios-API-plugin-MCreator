@@ -37,6 +37,9 @@ public class CuriosBauble extends GeneratableElement {
     public String leggingsModelPartL;
     public String leggingsModelPartR;
 
+    // Preferences model toggles
+    public List<String> disabledToggles = new ArrayList<>();
+
     private CuriosBauble() {
         this((ModElement)null);
     }

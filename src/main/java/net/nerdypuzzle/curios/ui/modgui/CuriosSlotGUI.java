@@ -32,6 +32,9 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
     private TextureSelectionButton texture;
     private final VTextField name;
     private final JSpinner amount;
+    private final JCheckBox modelToggling;
+    private final JCheckBox changeOrder;
+    private final JSpinner slotOrder;
 
     private final ValidationGroup page1group = new ValidationGroup();
 
@@ -40,6 +43,9 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
         super(mcreator, modElement, editingMode);
         name = new VTextField(17);
         amount = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+        modelToggling = L10N.checkbox("elementgui.common.enable");
+        changeOrder = L10N.checkbox("elementgui.common.enable");
+        slotOrder = new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
         this.initGUI();
         super.finalizeGUI();
     }
@@ -52,13 +58,23 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
 
         JPanel pane1 = new JPanel(new BorderLayout());
         pane1.setOpaque(false);
-        JPanel mainPanel = new JPanel(new GridLayout(2, 2, 0, 2));
+        JPanel mainPanel = new JPanel(new GridLayout(5, 2, 0, 2));
         mainPanel.setOpaque(false);
+        modelToggling.setOpaque(false);
+        changeOrder.setOpaque(false);
 
         mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("curios/slot_name"), L10N.label("elementgui.curiosslot.slot_name", new Object[0])));
         mainPanel.add(name);
         mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("curios/custom_slot_amount"), L10N.label("elementgui.curiosslot.slot_amount", new Object[0])));
         mainPanel.add(amount);
+        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("curios/slot_model_toggling"), L10N.label("elementgui.curiosslot.slot_model_toggling", new Object[0])));
+        mainPanel.add(modelToggling);
+        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("curios/custom_slot_order"), L10N.label("elementgui.curiosslot.custom_slot_order", new Object[0])));
+        mainPanel.add(changeOrder);
+        mainPanel.add(HelpUtils.wrapWithHelpButton(this.withEntry("curios/slot_order"), L10N.label("elementgui.curiosslot.slot_order", new Object[0])));
+        mainPanel.add(slotOrder);
+
+        changeOrder.addActionListener(e -> slotOrder.setEnabled(changeOrder.isSelected()));
 
         name.setValidator(new TextFieldValidator(this.name, L10N.t("elementgui.curiosslot.needs_name", new Object[0])));
         name.enableRealtimeValidation();
@@ -75,6 +91,14 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
         addPage(pane1).lazyValidate(this::validatePage);
     }
 
+    @Override
+    protected void afterGeneratableElementStored() {
+        if (texture.hasTexture()) {
+            FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/screens/" + texture.getTextureHolder().name() + ".png"),
+                    new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/curios/textures/slot/" + texture.getTextureHolder().name() + ".png"));
+        }
+    }
+
     protected AggregatedValidationResult validatePage() {
         if (!mcreator.getWorkspaceSettings().getDependencies().contains("curios_api"))
             return new AggregatedValidationResult.FAIL(L10N.t("elementgui.curiosbauble.needs_api", new Object[0]));
@@ -85,14 +109,10 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
         texture.setTexture(new TextureHolder(getModElement().getWorkspace(), StringUtils.removeEnd(slot.texture, ".png")));
         name.setText(slot.name);
         amount.setValue(slot.amount);
-    }
-
-    @Override
-    protected void afterGeneratableElementStored() {
-        if (texture.hasTexture()) {
-           FileIO.copyFile(new File(GeneratorUtils.getSpecificRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration(), "mod_assets_root"), "textures/screens/" + texture.getTextureHolder().name() + ".png"),
-                   new File(GeneratorUtils.getResourceRoot(mcreator.getWorkspace(), mcreator.getWorkspace().getGeneratorConfiguration()), "assets/curios/textures/slot/" + texture.getTextureHolder().name() + ".png"));
-        }
+        modelToggling.setSelected(slot.modelToggling);
+        changeOrder.setSelected(slot.changeOrder);
+        slotOrder.setValue(slot.slotOrder);
+        slotOrder.setEnabled(changeOrder.isSelected());
     }
 
     public CuriosSlot getElementFromGUI() {
@@ -100,6 +120,9 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
         slot.texture = texture.getTextureHolder().name() + ".png";
         slot.name = name.getText();
         slot.amount = (int) amount.getValue();
+        slot.modelToggling = modelToggling.isSelected();
+        slot.changeOrder = changeOrder.isSelected();
+        slot.slotOrder = (int) slotOrder.getValue();
         return slot;
     }
 

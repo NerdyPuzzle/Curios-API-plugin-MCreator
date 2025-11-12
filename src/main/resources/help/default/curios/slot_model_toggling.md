@@ -1,0 +1,1 @@
+If this checkbox is checked, the model rendered by baubles using this slot can not be toggled on or off and will alwaysd be visible.

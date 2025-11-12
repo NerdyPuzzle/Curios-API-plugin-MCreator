@@ -1,0 +1,1 @@
+If this checkbox is checked, the slot will use a custom order in the curios inventory instead of automatically being added as the last slot.
