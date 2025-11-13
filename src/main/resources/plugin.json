@@ -7,7 +7,7 @@
   ],
   "info": {
     "name": "New Curios API Plugin",
-    "version": "1.2",
+    "version": "1.2.1",
     "description": "Adds Curios API support to MCreator",
     "author": "NerdyPuzzle"
   }
