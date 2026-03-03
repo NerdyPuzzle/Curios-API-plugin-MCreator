@@ -44,6 +44,16 @@ public class ${name}Renderer implements ICurioRenderer.HumanoidRender {
 	}
 
     @Override
+    public void renderFirstPersonHand(ItemStack stack,
+                                       SlotContext slotContext,
+                                       HumanoidArm arm,
+                                       PoseStack poseStack,
+                                       MultiBufferSource renderTypeBuffer,
+                                       PlayerRenderState playerRenderState,
+                                       AbstractClientPlayer clientPlayer,
+                                       int packedLight) {}
+
+    @Override
     public HumanoidModel<? extends HumanoidRenderState> getModel(ItemStack stack, SlotContext slotContext) {
         return this.humanoidModel;
     }
