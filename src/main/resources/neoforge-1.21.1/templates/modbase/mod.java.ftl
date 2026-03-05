@@ -27,25 +27,27 @@ import org.apache.logging.log4j.Logger;
 	        }
 		</#if>
 
+		<@javacompress>
 		<#if w.hasSounds()>${JavaModName}Sounds.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("block")>${JavaModName}Blocks.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("blockentity")>${JavaModName}BlockEntities.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("item")>${JavaModName}Items.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("entity")>${JavaModName}Entities.REGISTRY.register(modEventBus);</#if>
+		<#if types["base:blocks"]??>${JavaModName}Blocks.REGISTRY.register(modEventBus);</#if>
+		<#if types["base:blockentities"]??>${JavaModName}BlockEntities.REGISTRY.register(modEventBus);</#if>
+		<#if types["base:items"]??>${JavaModName}Items.REGISTRY.register(modEventBus);</#if>
+		<#if types["base:entities"]??>${JavaModName}Entities.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasItemsInTabs()>${JavaModName}Tabs.REGISTRY.register(modEventBus);</#if>
 		<#if w.hasVariables()>${JavaModName}Variables.ATTACHMENT_TYPES.register(modEventBus);</#if>
-		<#if w.hasElementsOfBaseType("feature")>${JavaModName}Features.REGISTRY.register(modEventBus);</#if>
+		<#if types["base:features"]??>${JavaModName}Features.REGISTRY.register(modEventBus);</#if>
 		<#if w.getElementsOfType("feature")?filter(e -> e.getMetadata("has_nbt_structure")??)?size != 0>StructureFeature.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("potion")>${JavaModName}Potions.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("potioneffect")>${JavaModName}MobEffects.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("gui")>${JavaModName}Menus.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("particle")>${JavaModName}ParticleTypes.REGISTRY.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("villagerprofession")>${JavaModName}VillagerProfessions.PROFESSIONS.register(modEventBus);</#if>
-		<#if w.hasElementsOfType("fluid")>
+		<#if types["potions"]??>${JavaModName}Potions.REGISTRY.register(modEventBus);</#if>
+		<#if types["potioneffects"]??>${JavaModName}MobEffects.REGISTRY.register(modEventBus);</#if>
+		<#if types["guis"]??>${JavaModName}Menus.REGISTRY.register(modEventBus);</#if>
+		<#if types["particles"]??>${JavaModName}ParticleTypes.REGISTRY.register(modEventBus);</#if>
+		<#if types["villagerprofessions"]??>${JavaModName}VillagerProfessions.PROFESSIONS.register(modEventBus);</#if>
+		<#if types["fluids"]??>
 			${JavaModName}Fluids.REGISTRY.register(modEventBus);
 			${JavaModName}FluidTypes.REGISTRY.register(modEventBus);
 		</#if>
-		<#if w.hasElementsOfType("attribute")>${JavaModName}Attributes.REGISTRY.register(modEventBus);</#if>
+		<#if types["attributes"]??>${JavaModName}Attributes.REGISTRY.register(modEventBus);</#if>
+		</@javacompress>
 
 		// Start of user code block mod init
 		// End of user code block mod init
@@ -73,22 +75,25 @@ import org.apache.logging.log4j.Logger;
 	}
 
 	<#-- Wait procedure block support below -->
-	private static final Collection<Tuple<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
+	private static final Queue<IntObjectPair<Runnable>> workToBeScheduled = new ConcurrentLinkedQueue<>();
+	private static final PriorityQueue<TickTask> workQueue = new PriorityQueue<>(Comparator.comparingInt(TickTask::getTick));
 
-	public static void queueServerWork(int tick, Runnable action) {
+	public static void queueServerWork(int delay, Runnable action) {
 		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
-			workQueue.add(new Tuple<>(action, tick));
+			workToBeScheduled.add(new IntObjectImmutablePair<>(delay, action));
 	}
 
 	@SubscribeEvent public void tick(ServerTickEvent.Post event) {
-		List<Tuple<Runnable, Integer>> actions = new ArrayList<>();
-		workQueue.forEach(work -> {
-			work.setB(work.getB() - 1);
-			if (work.getB() == 0)
-				actions.add(work);
-		});
-		actions.forEach(e -> e.getA().run());
-		workQueue.removeAll(actions);
+		int currentTick = event.getServer().getTickCount();
+
+		IntObjectPair<Runnable> work;
+		while ((work = workToBeScheduled.poll()) != null) {
+			workQueue.add(new TickTask(currentTick + work.leftInt(), work.right()));
+		}
+
+		while (!workQueue.isEmpty() && currentTick >= workQueue.peek().getTick()) {
+			workQueue.poll().run();
+		}
 	}
 
 	public static class CuriosApiHelper {
@@ -106,7 +111,7 @@ import org.apache.logging.log4j.Logger;
                 .filter(tagKey -> tagKey.location().getNamespace().equals("curios"))
                 .anyMatch(itemstack::is);
         }
-	}
+    }
 
 }
 <#-- @formatter:on -->
