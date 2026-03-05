@@ -33,6 +33,7 @@ import net.mcreator.ui.procedure.AbstractProcedureSelector;
 import net.mcreator.ui.procedure.ProcedureSelector;
 import net.mcreator.ui.validation.AggregatedValidationResult;
 import net.mcreator.ui.validation.ValidationGroup;
+import net.mcreator.ui.validation.ValidationResult;
 import net.mcreator.ui.validation.Validator;
 import net.mcreator.ui.validation.component.VComboBox;
 import net.mcreator.ui.workspace.resources.TextureType;
@@ -228,7 +229,7 @@ public class CuriosBaubleGUI extends ModElementGUI<CuriosBauble> {
         });
 
         baubleModelTexture.setValidator(() -> {
-            return adefault.equals(baubleModel.getSelectedItem()) || baubleModelTexture.getSelectedItem() != null && !(baubleModelTexture.getSelectedItem()).isEmpty() ? Validator.ValidationResult.PASSED : new Validator.ValidationResult(Validator.ValidationResultType.ERROR, L10N.t("elementgui.ranged_item.error_custom_model_needs_texture", new Object[0]));
+            return adefault.equals(baubleModel.getSelectedItem()) || baubleModelTexture.getSelectedItem() != null && !(baubleModelTexture.getSelectedItem()).isEmpty() ? ValidationResult.PASSED : new ValidationResult(ValidationResult.Type.ERROR, L10N.t("elementgui.ranged_item.error_custom_model_needs_texture", new Object[0]));
         });
         page1group.addValidationElement(baubleModelTexture);
 

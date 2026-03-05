@@ -1,7 +1,7 @@
 package net.nerdypuzzle.curios.preferences;
 
 import net.mcreator.plugin.JavaPlugin;
-import net.mcreator.plugin.events.WorkspaceBuildStartedEvent;
+import net.mcreator.plugin.events.workspace.WorkspaceBuildStartedEvent;
 import net.mcreator.plugin.events.workspace.MCreatorLoadedEvent;
 import net.mcreator.plugin.events.workspace.WorkspaceSavedEvent;
 import net.mcreator.preferences.PreferencesManager;
