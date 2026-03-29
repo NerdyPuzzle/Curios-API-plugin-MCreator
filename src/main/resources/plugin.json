@@ -3,8 +3,7 @@
   "weight": 50,
   "javaplugin": "net.nerdypuzzle.curios.Launcher",
   "supportedversions": [
-    2026001,
-    202600110319
+    2026001
   ],
   "info": {
     "name": "New Curios API Plugin",
