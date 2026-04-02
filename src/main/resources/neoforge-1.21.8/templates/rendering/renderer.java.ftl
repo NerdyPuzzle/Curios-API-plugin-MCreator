@@ -1,5 +1,26 @@
 package ${package}.client.renderer;
 
+import top.theillusivec4.curios.api.client.ICurioRenderer;
+import top.theillusivec4.curios.api.SlotContext;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.Minecraft;
+
+import ${package}.client.model.${data.baubleModel};
+
+import java.util.Map;
+import java.util.Collections;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 public class ${name}Renderer implements ICurioRenderer.HumanoidRender {
 	private static final ResourceLocation TEXTURE = ResourceLocation.parse("${modid}:textures/entities/${data.baubleModelTexture}");
 	private final HumanoidModel humanoidModel;
