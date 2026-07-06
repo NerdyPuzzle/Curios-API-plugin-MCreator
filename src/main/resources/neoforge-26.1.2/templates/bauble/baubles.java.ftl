@@ -36,7 +36,7 @@ public class ${JavaModName}CuriosCompat {
                 <#if bauble.equipSound?has_content && bauble.equipSound.getUnmappedValue()?has_content>
                 @Override
                 public SoundInfo getEquipSound(SlotContext slotContext) {
-                    return new SoundInfo(DeferredHolder.create(Registries.SOUND_EVENT, ResourceLocation.parse("${bauble.equipSound}")).value(), 1, 1);
+                    return new SoundInfo(DeferredHolder.create(Registries.SOUND_EVENT, Identifier.parse("${bauble.equipSound}")).value(), 1, 1);
                 }
                 </#if>
 

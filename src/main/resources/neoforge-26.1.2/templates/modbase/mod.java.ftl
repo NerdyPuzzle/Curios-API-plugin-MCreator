@@ -44,6 +44,7 @@ import org.apache.logging.log4j.Logger;
 		<#if types["guis"]??>${JavaModName}Menus.REGISTRY.register(modEventBus);</#if>
 		<#if types["particles"]??>${JavaModName}ParticleTypes.REGISTRY.register(modEventBus);</#if>
 		<#if types["villagerprofessions"]??>${JavaModName}VillagerProfessions.PROFESSIONS.register(modEventBus);</#if>
+		<#if types["gamerules"]??>${JavaModName}GameRules.REGISTRY.register(modEventBus);</#if>
 		<#if types["fluids"]??>
 			${JavaModName}Fluids.REGISTRY.register(modEventBus);
 			${JavaModName}FluidTypes.REGISTRY.register(modEventBus);
@@ -103,7 +104,7 @@ import org.apache.logging.log4j.Logger;
 	private static Object minecraft;
 	private static MethodHandle playerHandle;
 	@Nullable public static Player clientPlayer() {
-		if (FMLEnvironment.dist.isClient()) {
+		if (FMLEnvironment.getDist().isClient()) {
 			try {
 				<#-- Lazy initialize and cache the Minecraft instance and player handle -->
 				if (minecraft == null || playerHandle == null) {
@@ -122,9 +123,9 @@ import org.apache.logging.log4j.Logger;
 	}
 
 	public static class CuriosApiHelper {
-	    private static final EntityCapability<IItemHandler, Void> CURIOS_INVENTORY = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath("curios", "item_handler"), IItemHandler.class);
+	    private static final EntityCapability<ResourceHandler, Void> CURIOS_INVENTORY = EntityCapability.createVoid(Identifier.fromNamespaceAndPath("curios", "item_handler"), ResourceHandler.class);
 
-        public static IItemHandler getCuriosInventory(Player player) {
+        public static ResourceHandler<ItemResource> getCuriosInventory(Player player) {
             if (ModList.get().isLoaded("curios")) {
                 return player.getCapability(CURIOS_INVENTORY);
             }
