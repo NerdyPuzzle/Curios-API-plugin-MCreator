@@ -1,0 +1,150 @@
+.conditions:
+  back: &cond_back "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BACK')?size != 0}"
+  belt: &cond_belt "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BELT')?size != 0}"
+  body: &cond_body "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BODY')?size != 0}"
+  bracelet: &cond_bracelet "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'BRACELET')?size != 0}"
+  charm: &cond_charm "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CHARM')?size != 0}"
+  curio: &cond_curio "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'CURIO')?size != 0}"
+  hands: &cond_hands "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HANDS')?size != 0}"
+  head: &cond_head "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'HEAD')?size != 0}"
+  necklace: &cond_necklace "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'NECKLACE')?size != 0}"
+  ring: &cond_ring "${w.getGElementsOfType('curiosbauble')?filter(e -> e.slotType == 'RING')?size != 0}"
+
+global_templates:
+  # back slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=BACK"
+    name: "@MODDATAROOT/curios/slots/back.json"
+    condition: *cond_back
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=BACK"
+    name: "@RESROOT/data/curios/tags/item/back.json"
+    condition: *cond_back
+
+  # belt slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=BELT"
+    name: "@MODDATAROOT/curios/slots/belt.json"
+    condition: *cond_belt
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=BELT"
+    name: "@RESROOT/data/curios/tags/item/belt.json"
+    condition: *cond_belt
+
+  # body slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=BODY"
+    name: "@MODDATAROOT/curios/slots/body.json"
+    condition: *cond_body
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=BODY"
+    name: "@RESROOT/data/curios/tags/item/body.json"
+    condition: *cond_body
+
+  # bracelet slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=BRACELET"
+    name: "@MODDATAROOT/curios/slots/bracelet.json"
+    condition: *cond_bracelet
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=BRACELET"
+    name: "@RESROOT/data/curios/tags/item/bracelet.json"
+    condition: *cond_bracelet
+
+  # charm slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=CHARM"
+    name: "@MODDATAROOT/curios/slots/charm.json"
+    condition: *cond_charm
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=CHARM"
+    name: "@RESROOT/data/curios/tags/item/charm.json"
+    condition: *cond_charm
+
+  # curio slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=CURIO"
+    name: "@MODDATAROOT/curios/slots/curio.json"
+    condition: *cond_curio
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=CURIO"
+    name: "@RESROOT/data/curios/tags/item/curio.json"
+    condition: *cond_curio
+
+  # hands slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=HANDS"
+    name: "@MODDATAROOT/curios/slots/hands.json"
+    condition: *cond_hands
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=HANDS"
+    name: "@RESROOT/data/curios/tags/item/hands.json"
+    condition: *cond_hands
+
+  # head slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=HEAD"
+    name: "@MODDATAROOT/curios/slots/head.json"
+    condition: *cond_head
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=HEAD"
+    name: "@RESROOT/data/curios/tags/item/head.json"
+    condition: *cond_head
+
+  # necklace slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=NECKLACE"
+    name: "@MODDATAROOT/curios/slots/necklace.json"
+    condition: *cond_necklace
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=NECKLACE"
+    name: "@RESROOT/data/curios/tags/item/necklace.json"
+    condition: *cond_necklace
+
+  # ring slot
+  - template: bjson/bauble/add_slot.json.ftl
+    writer: json
+    variables: "slot=RING"
+    name: "@MODDATAROOT/curios/slots/ring.json"
+    condition: *cond_ring
+  - template: bjson/bauble/add_items.json.ftl
+    writer: json
+    variables: "slot=RING"
+    name: "@RESROOT/data/curios/tags/item/ring.json"
+    condition: *cond_ring
+
+  # add slots to the player
+  - template: bjson/bauble/register.json.ftl
+    writer: json
+    name: "@MODDATAROOT/curios/entities/slots.json"
+
+  # register ICurio interfaces to items
+  - template: bauble/baubles.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameCuriosCompat.java"
+
+  - template: rendering/registry.java.ftl
+    condition: "${w.getGElementsOfType('curiosbauble')?filter(bauble -> bauble.hasModel())?size != 0}"
+    name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameCuriosRenderers.java"
+
+templates:
+  - template: rendering/renderer.java.ftl
+    condition: hasModel()
+    name: "@SRCROOT/@BASEPACKAGEPATH/client/renderer/@NAMERenderer.java"

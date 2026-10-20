@@ -1,0 +1,14 @@
+templates:
+  - template: bjson/slot/customslot.json.ftl
+    writer: json
+    name: "@MODDATAROOT/curios/slots/@registryname.json"
+  - template: bjson/slot/register.json.ftl
+    writer: json
+    name: "@MODDATAROOT/curios/entities/@registryname.json"
+  - template: bjson/slot/add_items.json.ftl
+    writer: json
+    name: "@RESROOT/data/curios/tags/item/@registryname.json"
+
+localizationkeys:
+  - key: curios.identifier.@registryname
+    mapto: name

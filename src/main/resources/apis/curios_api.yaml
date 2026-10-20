@@ -33,4 +33,21 @@ neoforge-26.1.2:
   update_files:
     - ~
 
+neoforge-26.3:
+  gradle: |
+    repositories {
+    maven {
+      name = "Illusive Soulworks maven"
+      url = "https://maven.theillusivec4.top/"
+      }
+    }
+    
+    dependencies {
+      runtimeOnly "top.theillusivec4.curios:curios-neoforge:17.0.0-beta.3+26.3"
+      compileOnly "top.theillusivec4.curios:curios-neoforge:17.0.0-beta.3+26.3:api"
+    }
+
+  update_files:
+    - ~
+
 name: "Curios API"

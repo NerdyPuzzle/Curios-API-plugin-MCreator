@@ -14,8 +14,6 @@ import net.mcreator.ui.modgui.ModElementGUI;
 import net.mcreator.ui.validation.AggregatedValidationResult;
 import net.mcreator.ui.validation.ValidationGroup;
 import net.mcreator.ui.validation.component.VTextField;
-import net.mcreator.ui.validation.validators.TextFieldValidator;
-import net.mcreator.ui.validation.validators.TextureSelectionButtonValidator;
 import net.mcreator.ui.workspace.resources.TextureType;
 import net.mcreator.workspace.elements.ModElement;
 import net.nerdypuzzle.curios.element.types.CuriosSlot;
@@ -41,7 +39,7 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
 
     public CuriosSlotGUI(MCreator mcreator, ModElement modElement, boolean editingMode) {
         super(mcreator, modElement, editingMode);
-        name = new VTextField(17);
+        name = new VTextField(17).requireValue("elementgui.curiosslot.needs_name").enableRealtimeValidation();
         amount = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
         modelToggling = L10N.checkbox("elementgui.common.enable");
         changeOrder = L10N.checkbox("elementgui.common.enable");
@@ -51,7 +49,8 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
     }
 
     protected void initGUI() {
-        texture = new TextureSelectionButton(new TypedTextureSelectorDialog(this.mcreator, TextureType.SCREEN));
+        texture = new TextureSelectionButton(new TypedTextureSelectorDialog(this.mcreator, TextureType.SCREEN))
+                .requireValue("elementgui.curiosslot.needs_texture");
         this.texture.setOpaque(false);
 
         JComponent textureComponent = PanelUtils.totalCenterInPanel(ComponentUtils.squareAndBorder(HelpUtils.wrapWithHelpButton(this.withEntry("curios/slot_texture"), this.texture), L10N.t("elementgui.common.texture", new Object[0])));
@@ -76,10 +75,7 @@ public class CuriosSlotGUI extends ModElementGUI<CuriosSlot> {
 
         changeOrder.addActionListener(e -> slotOrder.setEnabled(changeOrder.isSelected()));
 
-        name.setValidator(new TextFieldValidator(this.name, L10N.t("elementgui.curiosslot.needs_name", new Object[0])));
-        name.enableRealtimeValidation();
         page1group.addValidationElement(name);
-        texture.setValidator(new TextureSelectionButtonValidator(texture));
         page1group.addValidationElement(texture);
 
         if (!this.isEditingMode()) {
