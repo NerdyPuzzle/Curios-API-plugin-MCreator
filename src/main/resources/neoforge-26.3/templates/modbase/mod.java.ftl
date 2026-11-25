@@ -20,6 +20,15 @@ import org.apache.logging.log4j.Logger;
 
 		modEventBus.addListener(this::registerNetworking);
 
+		<#if settings.getMCreatorDependenciesRaw()?seq_contains("curios_api") && w.hasElementsOfType("curiosbauble")>
+		    if (ModList.get().isLoaded("curios")) {
+	            modEventBus.addListener(${JavaModName}CuriosCompat::registerCapabilities);
+	            <#if w.getGElementsOfType("curiosbauble")?filter(bauble -> bauble.hasModel())?size != 0>
+	                modEventBus.addListener(${JavaModName}CuriosRenderers::registerRenderers);
+	            </#if>
+	        }
+		</#if>
+
 		<@javacompress>
 		<#if w.hasSounds()>${JavaModName}Sounds.REGISTRY.register(modEventBus);</#if>
 		<#if types.base_blocks?has_content>${JavaModName}Blocks.REGISTRY.register(modEventBus);</#if>
